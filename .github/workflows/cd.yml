@@ -1,0 +1,72 @@
+name: CD - Build and Simulate Deployment
+
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*'  # Trigger on version tags (e.g., v1.0.0)
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
+      
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Get full history for version detection
+
+    - name: Extract version from tag or set default
+      id: extract-version
+      run: |
+        if [[ ${{ github.ref_type }} == 'tag' ]]; then
+          echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        else
+          echo "version=0.1.0-${{ github.sha:0:7 }}" >> $GITHUB_OUTPUT
+        fi
+        echo "Extracted version: ${{ steps.extract-version.outputs.version }}"
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
+
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install build twine
+
+    - name: Run tests
+      run: python -m pytest test_greetbot.py -v
+
+    - name: Build package artifact
+      run: python -m build
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: greetbot-package-${{ steps.extract-version.outputs.version }}
+        path: dist/
+        retention-days: 7
+
+  simulate-deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    environment: staging  # This will require environment setup
+    if: success()  # Only run if previous job succeeded
+    
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: greetbot-package-${{ needs.build-and-test.outputs.version }}
+
+    - name: Show deployment simulation
+      run: |
+        echo "📦 Deploying version: ${{ needs.build-and-test.outputs.version }}"
+        echo "🔐 Using deploy token (first 5 chars): ${{ secrets.DEPLOY_TOKEN:0:5 }}..."
+        echo "✅ Deployment to staging environment successful!"
+        ls -la  # Show downloaded artifacts
