@@ -25,7 +25,7 @@ jobs:
         if [[ ${{ github.ref_type }} == 'tag' ]]; then
           echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         else
-          echo "version=0.1.0-${{ github.sha:0:7 }}" >> $GITHUB_OUTPUT
+          echo "version=0.1.0-${GITHUB_SHA:0:7}" >> $GITHUB_OUTPUT
         fi
         echo "Extracted version: ${{ steps.extract-version.outputs.version }}"
 
@@ -67,6 +67,8 @@ jobs:
     - name: Show deployment simulation
       run: |
         echo "📦 Deploying version: ${{ needs.build-and-test.outputs.version }}"
-        echo "🔐 Using deploy token (first 5 chars): ${{ secrets.DEPLOY_TOKEN:0:5 }}..."
+        echo "🔐 Using deploy token (first 5 chars): ${DEPLOY_TOKEN:0:5}..."
         echo "✅ Deployment to staging environment successful!"
         ls -la  # Show downloaded artifacts
+      env:
+        DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
