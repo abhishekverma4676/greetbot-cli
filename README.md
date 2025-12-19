@@ -58,7 +58,7 @@ Simulate Deployment: Artifact handling, secret management, environment deploymen
 
 Features: Artifact upload/download, GitHub Environments, secrets handling
 
-🛠 Development Workflow
+## 🛠 Development Workflow
 This project demonstrates industry Git workflow:
 
 Issue Tracking: All features start as GitHub Issues
@@ -71,7 +71,7 @@ Merge: Squash or merge commits with issue closing
 
 CI/CD: Automated testing and deployment simulation
 
-📈 GitHub Features Utilized
+## 📈 GitHub Features Utilized
 GitHub Issues: Feature tracking with acceptance criteria
 
 GitHub Actions: CI/CD pipelines with matrix builds
@@ -84,7 +84,7 @@ GitHub Artifacts: Build output storage
 
 Branch Protection: (Recommended) Require CI passing before merge
 
-🤝 Contributing
+## 🤝 Contributing
 Create an issue describing the proposed change
 
 Fork the repository and create a feature branch
@@ -94,4 +94,3 @@ Implement changes with tests
 Ensure CI passes
 
 Submit a pull request referencing the issue
-    
