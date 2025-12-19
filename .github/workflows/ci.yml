@@ -7,11 +7,16 @@ on:
     branches: [ "main" ]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+    test:
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        exclude:
+          # Exclude Python 3.9 on Windows if you want (optional)
+          - os: windows-latest
+            python-version: "3.9"
 
     steps:
     - name: Checkout repository
@@ -35,11 +40,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Display platform info
+      run: |
+        echo "Running on: ${{ runner.os }}"
+        echo "Python: ${{ matrix.python-version }}"
+        python --version
+
     - name: Run tests with pytest
       run: |
         python -m pytest test_greetbot.py -v
 
-  lint:
+lint:
     runs-on: ubuntu-latest
     needs: test  # Only run lint if tests pass
     if: always()  # But still show lint even if tests fail (good for learning)
