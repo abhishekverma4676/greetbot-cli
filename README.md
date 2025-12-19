@@ -34,8 +34,8 @@ pip install -e .
 
 # Run the tool
 greetbot --name "Your Name"
-
- CI/CD Pipeline Overview
+```
+## CI/CD Pipeline Overview
 Continuous Integration (CI)
 Trigger: On every push and pull request to main
 
@@ -96,4 +96,4 @@ Ensure CI passes
 Submit a pull request referencing the issue
 
 
-**Replace `YOUR-USERNAME` with your actual GitHub username.**
+`abhishekverma4676`
