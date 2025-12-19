@@ -94,6 +94,4 @@ Implement changes with tests
 Ensure CI passes
 
 Submit a pull request referencing the issue
-
-
-`abhishekverma4676`
+    
